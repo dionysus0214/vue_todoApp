@@ -1,26 +1,54 @@
 <template>
-  <input 
-    type="text" 
-    v-model="name"
-  >
-  <button 
-    class="btn btn-primary"
-    @click="onSubmit"
-  >
-    Click
-  </button>
+  <div class="container">
+    <h2>To-Do List</h2>
+    <form
+      class="d-flex"
+      @submit.prevent="onSubmit"
+    >
+      <div class="flex-grow-1 mr-2">
+        <input
+          class="form-control"
+          type="text" 
+          v-model="todo"
+          placeholder="Type new to-do"
+        >
+      </div>
+      <div>
+        <button 
+          class="btn btn-primary"
+          type="submit"
+        >
+          Add
+        </button>
+      </div>
+    </form>
+    <div class="card mt-2">
+      <div class="card-body p-2">
+        {{ todos[0].subject }}
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
 import { ref } from 'vue';
 export default {
   setup() {
-    const name = ref('Kossie');
+    const todo = ref('');
+    const todos = ref([
+      {id: 1, subject: 'vue3 공부'},
+      {id: 2, subject: '그룹PT'},
+    ]);
+
     const onSubmit = () => {
-      console.log(name.value)
+      todos.value.push({
+        id: Date.now(),
+        subject: todo.value
+      });
     };
     return {
-      name,
+      todo,
+      todos,
       onSubmit,
     };
   }
@@ -28,7 +56,7 @@ export default {
 </script>
 
 <style>
-  .name {
-    color: red;
+  .flex-grow-1 {
+    margin-right: 10px;
   }
 </style>
