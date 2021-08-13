@@ -1,30 +1,36 @@
 <template>
   <div class="container">
     <h2>To-Do List</h2>
-    <form
-      class="d-flex"
-      @submit.prevent="onSubmit"
-    >
-      <div class="flex-grow-1 mr-2">
-        <input
-          class="form-control"
-          type="text" 
-          v-model="todo"
-          placeholder="Type new to-do"
-        >
+    <form @submit.prevent="onSubmit">
+      <div class="d-flex">
+        <div class="flex-grow-1 mr-2">
+          <input
+            class="form-control"
+            type="text" 
+            v-model="todo"
+            placeholder="Type new to-do"
+          >
+        </div>
+        <div>
+          <button 
+            class="btn btn-primary"
+            type="submit"
+          >
+            Add
+          </button>
+        </div>
       </div>
-      <div>
-        <button 
-          class="btn btn-primary"
-          type="submit"
-        >
-          Add
-        </button>
+      <div v-show="hasError" style="color: red">
+        This field cannot be empty
       </div>
     </form>
-    <div class="card mt-2">
+    <div 
+      v-for="todo in todos"
+      :key="todo.id"
+      class="card mt-2"
+    >
       <div class="card-body p-2">
-        {{ todos[0].subject }}
+        {{ todo.subject }}
       </div>
     </div>
   </div>
@@ -39,24 +45,30 @@ export default {
       {id: 1, subject: 'vue3 공부'},
       {id: 2, subject: '그룹PT'},
     ]);
-
+    const hasError = ref(false);
     const onSubmit = () => {
-      todos.value.push({
-        id: Date.now(),
-        subject: todo.value
-      });
+      if (todo.value === '') {
+        hasError.value = true;
+      } else {
+        todos.value.push({
+          id: Date.now(),
+          subject: todo.value
+        });
+        hasError.value = false;
+      }
     };
     return {
       todo,
       todos,
       onSubmit,
+      hasError,
     };
   }
 }
 </script>
 
 <style>
-  .flex-grow-1 {
-    margin-right: 10px;
+  .name {
+    color: red;
   }
 </style>
