@@ -30,7 +30,19 @@
       class="card mt-2"
     >
       <div class="card-body p-2">
-        {{ todo.subject }}
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            v-model="todo.completed"
+          >
+          <label
+            class="form-check-label"
+            :class="{ todo: todo.completed }"
+          >
+            {{ todo.subject }}
+          </label>
+        </div>
       </div>
     </div>
   </div>
@@ -41,20 +53,25 @@ import { ref } from 'vue';
 export default {
   setup() {
     const todo = ref('');
-    const todos = ref([
-      {id: 1, subject: 'vue3 공부'},
-      {id: 2, subject: '그룹PT'},
-    ]);
+    const todos = ref([]);
     const hasError = ref(false);
+
+    const todoStyle = {
+      textDecoration: 'line-through',
+      color: 'gray'
+    };
+
     const onSubmit = () => {
       if (todo.value === '') {
         hasError.value = true;
       } else {
         todos.value.push({
           id: Date.now(),
-          subject: todo.value
+          subject: todo.value,
+          completed: false,
         });
         hasError.value = false;
+        todo.value = '';
       }
     };
     return {
@@ -62,13 +79,15 @@ export default {
       todos,
       onSubmit,
       hasError,
+      todoStyle
     };
   }
 }
 </script>
 
 <style>
-  .name {
-    color: red;
+  .todo {
+    color: gray;
+    text-decoration: line-through;
   }
 </style>
