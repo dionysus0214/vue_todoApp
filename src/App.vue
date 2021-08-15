@@ -1,14 +1,21 @@
 <template>
   <div class="container">
     <h2>To-Do List</h2>
+    <input
+      class="form-control"
+      type="text" 
+      v-model="searchText"
+      placeholder="Search"
+    >
+    <hr/>
     <todo-simple-form
       @add-todo="addTodo"
     />
-    <div v-if="!todos.length">
-      추가된 To-Do가 없습니다.
+    <div v-if="!filteredTodos.length">
+      There is nothing to display.
     </div>
     <todo-list
-      :todos="todos"
+      :todos="filteredTodos"
       @toggle-todo="toggleTodo"
       @delete-todo="deleteTodo"
     />
@@ -16,7 +23,7 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import TodoSimpleForm from './components/TodoSimpleForm.vue';
 import TodoList from './components/TodoList.vue';
 
@@ -45,12 +52,26 @@ export default {
       todos.value.splice(index, 1);
     };
 
+    const searchText = ref('');
+
+    const filteredTodos = computed(() => {
+      if(searchText.value) {
+        return todos.value.filter(todo => {
+          return todo.subject.includes(searchText.value);
+        });
+      }
+
+      return todos.value;
+    });
+
     return {
       todos,
       todoStyle,
       addTodo,
       toggleTodo,
       deleteTodo,
+      searchText,
+      filteredTodos
     };
   }
 }
