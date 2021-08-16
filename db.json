@@ -1,12 +1,9 @@
 {
   "todos": [
     {
-      "id": 1,
-      "content": "hi"
-    },
-    {
-      "id": 2,
-      "content": "hello"
+      "subject": "buy apple",
+      "completed": false,
+      "id": 1
     }
   ]
 }

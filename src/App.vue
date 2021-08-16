@@ -11,6 +11,9 @@
     <todo-simple-form
       @add-todo="addTodo"
     />
+    <div style="color: red">
+      {{ error }}
+    </div>
     <div v-if="!filteredTodos.length">
       There is nothing to display.
     </div>
@@ -26,6 +29,7 @@
 import { ref, computed } from 'vue';
 import TodoSimpleForm from './components/TodoSimpleForm.vue';
 import TodoList from './components/TodoList.vue';
+import axios from 'axios';
 
 export default {
   components: {
@@ -34,6 +38,7 @@ export default {
   },
   setup() {
     const todos = ref([]);
+    const error = ref('');
 
     const todoStyle = {
       textDecoration: 'line-through',
@@ -41,7 +46,17 @@ export default {
     };
 
     const addTodo = (todo => {
-      todos.value.push(todo);
+      error.value = '';
+      axios.post('http://localhost:3000/todos', {
+        subject: todo.subject,
+        completed: todo.completed,
+      }).then(res => {
+        console.log(res);
+        todos.value.push(res.data);
+      }).catch(err => {
+        console.log(err);
+        error.value = 'Something went wrong.'
+      });
     });
 
     const toggleTodo = (index) => {
@@ -71,7 +86,8 @@ export default {
       toggleTodo,
       deleteTodo,
       searchText,
-      filteredTodos
+      filteredTodos,
+      error
     };
   }
 }
