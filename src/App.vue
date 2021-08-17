@@ -40,37 +40,62 @@ export default {
     const todos = ref([]);
     const error = ref('');
 
-    const todoStyle = {
-      textDecoration: 'line-through',
-      color: 'gray'
+    const getTodos = async () => {
+      try {
+        const res = await axios.get('http://localhost:3000/todos');
+        todos.value = res.data;
+      } catch (err) {
+        error.value = 'Something went wrong.';
+      }
     };
 
-    const addTodo = (todo => {
+    getTodos();
+
+    const addTodo = async (todo) => {
       error.value = '';
-      axios.post('http://localhost:3000/todos', {
-        subject: todo.subject,
-        completed: todo.completed,
-      }).then(res => {
-        console.log(res);
+      try {
+        const res = await axios.post('http://localhost:3000/todos', {
+          subject: todo.subject,
+          completed: todo.completed,
+        });
         todos.value.push(res.data);
-      }).catch(err => {
+      } catch(err) {
         console.log(err);
-        error.value = 'Something went wrong.'
-      });
-    });
-
-    const toggleTodo = (index) => {
-      todos.value[index].completed = !todos.value[index].completed;
+        error.value = 'Something went wrong.';
+      }
     };
 
-    const deleteTodo = (index) => {
-      todos.value.splice(index, 1);
+    const toggleTodo = async (index) => {
+      error.value = '';
+      const id = todos.value[index].id;
+      try {
+        await axios.patch('http://localhost:3000/todos/' + id, {
+          completed: !todos.value[index].completed
+        });
+        todos.value[index].completed = !todos.value[index].completed;
+      } catch (err) {
+        console.log(err);
+        error.value = 'Something went wrong.';
+      }
+
+    };
+
+    const deleteTodo = async (index) => {
+      error.value = '';
+      const id = todos.value[index].id;
+      try {
+        axios.delete('http://localhost:3000/todos/' + id);
+        todos.value.splice(index, 1);
+      } catch (err) {
+        console.log(err);
+        error.value = 'Something went wrong.';
+      }
     };
 
     const searchText = ref('');
 
     const filteredTodos = computed(() => {
-      if(searchText.value) {
+      if (searchText.value) {
         return todos.value.filter(todo => {
           return todo.subject.includes(searchText.value);
         });
@@ -81,7 +106,6 @@ export default {
 
     return {
       todos,
-      todoStyle,
       addTodo,
       toggleTodo,
       deleteTodo,
