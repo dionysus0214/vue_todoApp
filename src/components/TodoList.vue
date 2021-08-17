@@ -9,7 +9,7 @@
         <input
           class="form-check-input"
           type="checkbox"
-          :value="todo.completed"
+          :checked="todo.completed"
           @change="toggleTodo(index)"
         >
         <label
@@ -52,7 +52,7 @@ export default {
     return {
       toggleTodo,
       deleteTodo,
-    }
+    };
   }
 }
 </script>

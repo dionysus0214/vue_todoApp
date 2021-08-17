@@ -51,7 +51,7 @@ export default {
       todo,
       hasError,
       onSubmit,
-    }
+    };
   }
 }
 </script>

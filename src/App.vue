@@ -94,7 +94,7 @@ export default {
           completed: todo.completed,
         });
         getTodos(1);
-      } catch(err) {
+      } catch (err) {
         console.log(err);
         error.value = 'Something went wrong.';
       }
@@ -118,7 +118,7 @@ export default {
       error.value = '';
       const id = todos.value[index].id;
       try {
-        axios.delete('http://localhost:3000/todos/' + id);
+        await axios.delete('http://localhost:3000/todos/' + id);
         getTodos(1);
       } catch (err) {
         console.log(err);
@@ -131,8 +131,7 @@ export default {
     const searchTodo = () => {
       clearTimeout(timeout);
       getTodos(1);
-    }
-
+    };
 
     watch(searchText, () => {
       clearTimeout(timeout);
