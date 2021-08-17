@@ -6,6 +6,7 @@
       type="text" 
       v-model="searchText"
       placeholder="Search"
+      @keyup.enter="searchTodo"
     >
     <hr/>
     <todo-simple-form
@@ -14,11 +15,11 @@
     <div style="color: red">
       {{ error }}
     </div>
-    <div v-if="!filteredTodos.length">
+    <div v-if="!todos.length">
       There is nothing to display.
     </div>
     <todo-list
-      :todos="filteredTodos"
+      :todos="todos"
       @toggle-todo="toggleTodo"
       @delete-todo="deleteTodo"
     />
@@ -26,7 +27,7 @@
     <nav aria-label="Page navigation example">
       <ul class="pagination">
         <li v-if="currentPage !== 1" class="page-item">
-          <a style="cursor: pointer" class="page-link" @click="getTodos(currentPage - 1)">
+          <a class="page-link" @click="getTodos(currentPage - 1)">
             Previous
           </a>
         </li>
@@ -36,10 +37,10 @@
           class="page-item"
           :class="currentPage === page ? 'active' : ''"
         >
-          <a style="cursor: pointer" class="page-link" @click="getTodos(page)">{{ page }}</a>
+          <a class="page-link" @click="getTodos(page)">{{ page }}</a>
         </li>
         <li v-if="numberOfPages !== currentPage" class="page-item">
-          <a style="cursor: pointer" class="page-link" @click="getTodos(currentPage + 1)">Next</a>
+          <a class="page-link" @click="getTodos(currentPage + 1)">Next</a>
         </li>
       </ul>
     </nav>
@@ -47,7 +48,7 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import TodoSimpleForm from './components/TodoSimpleForm.vue';
 import TodoList from './components/TodoList.vue';
 import axios from 'axios';
@@ -60,8 +61,9 @@ export default {
   setup() {
     const todos = ref([]);
     const error = ref('');
+    const searchText = ref('');
     const numberOfTodos = ref(0);
-    const limit = 5;
+    let limit = 5;
     const currentPage = ref(1);
 
     const numberOfPages = computed(() => {
@@ -72,7 +74,7 @@ export default {
       currentPage.value = page;
       try {
         const res = await axios.get(
-          `http://localhost:3000/todos?_page=${page}&_limit=${limit}`
+          `http://localhost:3000/todos?_sort=id&_order=desc&subject_like=${searchText.value}&_page=${page}&_limit=${limit}`
         );
         numberOfTodos.value = res.headers['x-total-count'];
         todos.value = res.data;
@@ -87,11 +89,11 @@ export default {
     const addTodo = async (todo) => {
       error.value = '';
       try {
-        const res = await axios.post('http://localhost:3000/todos', {
+        await axios.post('http://localhost:3000/todos', {
           subject: todo.subject,
           completed: todo.completed,
         });
-        todos.value.push(res.data);
+        getTodos(1);
       } catch(err) {
         console.log(err);
         error.value = 'Something went wrong.';
@@ -110,7 +112,6 @@ export default {
         console.log(err);
         error.value = 'Something went wrong.';
       }
-
     };
 
     const deleteTodo = async (index) => {
@@ -118,23 +119,26 @@ export default {
       const id = todos.value[index].id;
       try {
         axios.delete('http://localhost:3000/todos/' + id);
-        todos.value.splice(index, 1);
+        getTodos(1);
       } catch (err) {
         console.log(err);
         error.value = 'Something went wrong.';
       }
     };
 
-    const searchText = ref('');
+    let timeout = null;
 
-    const filteredTodos = computed(() => {
-      if (searchText.value) {
-        return todos.value.filter(todo => {
-          return todo.subject.includes(searchText.value);
-        });
-      }
+    const searchTodo = () => {
+      clearTimeout(timeout);
+      getTodos(1);
+    }
 
-      return todos.value;
+
+    watch(searchText, () => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        getTodos(1);
+      }, 1000);
     });
 
     return {
@@ -143,11 +147,11 @@ export default {
       toggleTodo,
       deleteTodo,
       searchText,
-      filteredTodos,
       error,
       numberOfPages,
       currentPage,
-      getTodos
+      getTodos,
+      searchTodo
     };
   }
 }
@@ -160,5 +164,8 @@ export default {
   }
   .flex-grow-1 {
     margin-right: 8px;
+  }
+  .pagination a {
+    cursor: pointer;
   }
 </style>
