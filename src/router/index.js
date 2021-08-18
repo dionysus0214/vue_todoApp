@@ -1,9 +1,10 @@
-import { createRouter, createWebHashHistory } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../pages/index.vue';
 import Todos from '../pages/todos/index.vue';
+import Todo from '../pages/todos/_id.vue';
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes: [
     {
       path: '/',
@@ -12,8 +13,13 @@ const router = createRouter({
     },
     {
       path: '/todos',
-      neme: 'Todos',
+      name: 'Todos',
       component: Todos
+    },
+    {
+      path: '/todos/:id',
+      name: 'Todo',
+      component: Todo
     }
   ]
 });
