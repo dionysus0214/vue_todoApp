@@ -1,8 +1,6 @@
 <template>
-  <h2>To-Do Page</h2>
-  <todo-form
-    :editing="true"
-  />
+  <h2>Create Page</h2>
+  <todo-form />
 </template>
 
 <script>

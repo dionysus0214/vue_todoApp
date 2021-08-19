@@ -1,6 +1,15 @@
 <template>
   <div>
-    <h2>To-Do List</h2>
+    <div class="d-flex justify-content-between mb-3">
+      <h2>To-Do List</h2>
+      <buttton
+        class="btn btn-primary"
+        @click="moveToCreatePage"
+      >
+        Create Todo
+      </buttton>
+    </div>
+
     <input
       class="form-control"
       type="text" 
@@ -9,12 +18,6 @@
       @keyup.enter="searchTodo"
     >
     <hr/>
-    <todo-simple-form
-      @add-todo="addTodo"
-    />
-    <div style="color: red">
-      {{ error }}
-    </div>
     <div v-if="!todos.length">
       There is nothing to display.
     </div>
@@ -54,19 +57,19 @@
 
 <script>
 import { ref, computed, watch } from 'vue';
-import TodoSimpleForm from '@/components/TodoSimpleForm.vue';
 import TodoList from '@/components/TodoList.vue';
 import Toast from '@/components/Toast.vue';
 import { useToast } from '@/composables/toast';
 import axios from 'axios';
+import { useRouter } from 'vue-router';
 
 export default {
   components: {
-    TodoSimpleForm,
     TodoList,
     Toast
   },
   setup() {
+    const router = useRouter();
     const todos = ref([]);
     const error = ref('');
     const searchText = ref('');
@@ -141,6 +144,12 @@ export default {
       }
     };
 
+    const moveToCreatePage = () => {
+      router.push({
+        name: 'TodoCreate'
+      });
+    };
+
     let timeout = null;
 
     const searchTodo = () => {
@@ -168,7 +177,8 @@ export default {
       searchTodo,
       showToast,
       toastMessage,
-      toastAlertType
+      toastAlertType,
+      moveToCreatePage
     };
   }
 }
