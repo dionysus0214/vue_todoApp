@@ -48,15 +48,25 @@
       Cancel
     </button>
   </form>
+  <toast
+    v-if="showToast"
+    :message="toastMessage"
+    :type="toastAlertType"
+  />
 </template>
 
 <script>
 import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
-import { ref, computed } from '@vue/reactivity';
+import { ref, computed } from 'vue';
 import _ from 'lodash';
+import Toast from '@/components/Toast.vue';
+import { useToast } from '@/composables/toast';
 
 export default {
+  components: {
+    Toast
+  },
   setup () {
     const route = useRoute();
     const router = useRouter();
@@ -64,14 +74,24 @@ export default {
     const originalTodo = ref(null);
     const loading = ref(true);
     const todoId = route.params.id;
+
+    const {
+      toastMessage,
+      toastAlertType,
+      showToast,
+      triggerToast
+    } = useToast();
     
     const getTodo = async () => {
-      const res = await axios.get(`http://localhost:3000/todos/${todoId}`);
-
-      todo.value = { ...res.data };
-      originalTodo.value = { ...res.data };
-
-      loading.value = false;
+      try {
+        const res = await axios.get(`http://localhost:3000/todos/${todoId}`);
+        todo.value = { ...res.data };
+        originalTodo.value = { ...res.data };
+        loading.value = false;
+      } catch (err) {
+        console.log(err);
+        triggerToast('Something went wrong.', 'danger');
+      }
     };
 
     const todoUpdated = computed(() => {
@@ -91,12 +111,17 @@ export default {
     getTodo();
 
     const onSave = async () => {
-      const res = await axios.put(`http://localhost:3000/todos/${todoId}`, {
-        subject: todo.value.subject,
-        completed: todo.value.completed
-      });
-
-      originalTodo.value = {...res.data};
+      try {
+        const res = await axios.put(`http://localhost:3000/todos/${todoId}`, {
+          subject: todo.value.subject,
+          completed: todo.value.completed
+        });
+        originalTodo.value = {...res.data};
+        triggerToast('Successfully saved!');
+      } catch (err) {
+        console.log(err);
+        triggerToast('Something went wrong.', 'danger');
+      }
     };
 
     return {
@@ -105,7 +130,11 @@ export default {
       toggleTodoStatus,
       moveToTodoListPage,
       onSave,
-      todoUpdated
+      todoUpdated,
+      showToast,
+      triggerToast,
+      toastMessage,
+      toastAlertType
     };
   }
 }
