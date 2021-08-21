@@ -33,16 +33,19 @@
       </div>
     </div>
   </div>
-  <modal
-    v-if="showModal"
-    @close="closeModal"
-  />
+  <teleport to="#modal">
+    <modal
+      v-if="showModal"
+      @close="closeModal"
+      @delete="deleteTodo"
+    />
+  </teleport>
 </template>
 
 <script>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import Modal from '@/components/Modal.vue';
+import Modal from '@/components/DeleteModal.vue';
 
 export default {
   components: {
@@ -74,8 +77,8 @@ export default {
       showModal.value = false;
     };
 
-    const deleteTodo = (index) => {
-      emit('delete-todo', index);
+    const deleteTodo = () => {
+      emit('delete-todo', todoDeleteId.value);
     };
 
     const moveToPage = (todoId) => {
