@@ -3,7 +3,7 @@
     Home Page
   </div>
   <div>{{ count }}</div>
-  <button class="btn btn-warning" @click="count++">Add</button>
+  <button class="btn btn-dark" @click="count++">Add</button>
 </template>
 
 <script>
