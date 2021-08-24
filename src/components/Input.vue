@@ -45,7 +45,7 @@ export default {
 </script>
 
 <style scoped>
-  .text-red {
-    color: red;
-  }
+.text-red {
+  color: red;
+}
 </style>

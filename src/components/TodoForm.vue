@@ -50,13 +50,6 @@
       Cancel
     </button>
   </form>
-  <transition name="fade">
-    <toast
-      v-if="showToast"
-      :message="toastMessage"
-      :type="toastAlertType"
-    />
-  </transition>
 </template>
 
 <script>
@@ -64,13 +57,11 @@ import { useRoute, useRouter } from 'vue-router';
 import axios from '@/axios';
 import { ref, computed } from 'vue';
 import _ from 'lodash';
-import Toast from '@/components/Toast.vue';
 import { useToast } from '@/composables/toast';
 import Input from '@/components/Input.vue';
 
 export default {
   components: {
-    Toast,
     Input
   },
   props: {
@@ -155,7 +146,7 @@ export default {
           todo.value.subject = '';
           todo.value.body = '';
         }
-        const message = 'Successfully ' + (props.editing ? 'Updated!' : 'Created!');
+        const message = 'Successfully ' + (props.editing ? 'Updated' : 'Created');
         triggerToast(message);
 
         if (!props.editing) {
@@ -185,22 +176,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-  .fade-enter-active,
-  .fade-leave-active {
-    transition: all 0.5s ease;
-  }
-
-  .fade-enter-from,
-  .fade-leave-to {
-    opacity: 0;
-    transform: translateY(-30px);
-  }
-  
-  .fade-enter-to,
-  .fade-leave-from {
-    opacity: 1;
-    transform: translateY(0px);
-  }
-</style>
