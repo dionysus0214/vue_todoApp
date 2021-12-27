@@ -8,6 +8,7 @@
         style="cursor: pointer"
         @click="moveToPage(item.id)"
       >
+      <!-- 부모 element에서 d-flex 하고 자식 element에서 flex-grow-1 하면 inline으로 변경 -->
         <div class="flex-grow-1">
           <input
             class="m-2"
@@ -16,6 +17,11 @@
             @change="toggleTodo(index, $event)"
             @click.stop
           >
+          <!--
+            :class="{active: isActive}"
+            active는 key값, isActive는 boolean
+            isActive가 true일 때 class가 추가
+          -->
           <span
             :class="{ todo: item.completed }"
           >
