@@ -10,6 +10,10 @@
       >
       <!-- 부모 element에서 d-flex 하고 자식 element에서 flex-grow-1 하면 inline으로 변경 -->
         <div class="flex-grow-1">
+          <!--
+            기존에는 v-model="item.completed" 였던 걸 :checked="item.completed"로 바꾸고 @change 이벤트 걸어줌
+            자식 component에서는 값 변경이 안되기 때문
+          -->
           <input
             class="m-2"
             type="checkbox"
@@ -59,12 +63,15 @@ export default {
     Modal,
     List
   },
+  // props는 one-way-down binding(부모에서 자식으로만 데이터를 내려줌)
+  // 자식 component에서 부모 component의 값을 변경하면 안됨
   props: {
     todos: {
       type: Array,
       required: true
     }
   },
+  // vue.js 3부터 적용된 것으로 emits 속성에 emit로 사용한 함수명 적어줘야 함
   emits: ['toggle-todo', 'delete-todo'],
   setup(props, { emit }) {
     const router = useRouter();

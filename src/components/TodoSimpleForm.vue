@@ -29,6 +29,7 @@ import { ref } from 'vue';
 
 export default {
   emits: ['add-todo'],
+  // 자식 component에서 부모 component로 데이터를 보낼 때 필요한 게 setup(props, context)에서 context 안에 들어있음
   setup(props, { emit }) {
     const todo = ref('');
     const hasError = ref(false);
@@ -37,6 +38,7 @@ export default {
       if (todo.value === '') {
         hasError.value = true;
       } else {
+        // emit(이벤트 이름, 올려주고 싶은 데이터)
         emit('add-todo', {
           id: Date.now(),
           subject: todo.value,
