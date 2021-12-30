@@ -69,7 +69,10 @@ export default {
     const numberOfTodos = ref(0);
     let limit = 5;
     const currentPage = ref(1);
-
+    
+    // 다른 state에 의존하는 state를 만들고 싶을 때 computed 사용
+    // computed는 내부에 있는 reactive state가 있고 변경될 때만 그 값을 변수에 저장(값을 인자로 받아오지 못함)
+    // computed는 값을 캐시함 
     const numberOfPages = computed(() => {
       return Math.ceil(numberOfTodos.value/limit);
     });
