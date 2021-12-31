@@ -84,6 +84,9 @@ export default {
       triggerToast
     } = useToast();
 
+    // 동기: 서버에 요청을 보냈을 때 응답이 돌아와야 다음 동작 수행
+    // 비동기: 응답 상태와 상관 없이 다음 동작 수행 가능
+    // async, await로 비동기 처리 가능
     const getTodos = async (page = currentPage.value) => {
       currentPage.value = page;
       try {
@@ -100,6 +103,8 @@ export default {
 
     getTodos();
 
+    // json server 설치 후 데이터베이스에 저장
+    // 명령어: json-server --watch db.json
     const addTodo = async (todo) => {
       error.value = '';
       try {
