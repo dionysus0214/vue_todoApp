@@ -157,6 +157,9 @@ export default {
       getTodos(1);
     };
 
+    // watch effect는 의존성이 있는 데이터에 대해 즉시 실행
+    // watch effect 내부의 reactive state 값(ref, reactive, props, computed)이 변경되면 watch 실행(처음에도 실행)
+    // watch는 새로운 데이터와 이전 데이터를 모두 가져올 수 있음
     watch(searchText, () => {
       clearTimeout(timeout);
       timeout = setTimeout(() => {
