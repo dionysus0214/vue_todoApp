@@ -33,6 +33,10 @@
           </span>
         </div>
         <div>
+          <!--
+            이벤트 버블링: 특정 화면 요소에서 이벤트가 발생했을 떄 해당 이벤트가 더 상위의 화면 요소로 전달되어 가능 특성
+            @click.stop 속성으로 이벤트 버블링을 막을 수 있음
+          -->
           <button
             class="btn btn-danger btn-sm"
             @click.stop="openModal(item.id)"
