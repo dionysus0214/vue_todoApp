@@ -25,12 +25,13 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, getCurrentInstance } from 'vue';
 
 export default {
   emits: ['add-todo'],
   // 자식 component에서 부모 component로 데이터를 보낼 때 필요한 게 setup(props, context)에서 context 안에 들어있음
-  setup(props, { emit }) {
+  setup() {
+    const { emit } = getCurrentInstance;
     const todo = ref('');
     const hasError = ref(false);
 

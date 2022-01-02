@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref, getCurrentInstance } from 'vue';
 import { useRouter } from 'vue-router';
 import Modal from '@/components/DeleteModal.vue';
 import List from '@/components/List.vue';
@@ -77,7 +77,8 @@ export default {
   },
   // vue.js 3부터 적용된 것으로 emits 속성에 emit로 사용한 함수명 적어줘야 함
   emits: ['toggle-todo', 'delete-todo'],
-  setup(props, { emit }) {
+  setup() {
+    const { emit } = getCurrentInstance;
     const router = useRouter();
     const showModal = ref(false);
     const todoDeleteId = ref(null);
